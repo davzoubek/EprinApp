@@ -1,3 +1,7 @@
+using System.Drawing.Text;
+using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
+
 namespace EprinAppClient
 {
     internal static class Program
@@ -11,7 +15,7 @@ namespace EprinAppClient
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new ClientForm1());
+            Application.Run(new ClientForm());
         }
     }
 }
