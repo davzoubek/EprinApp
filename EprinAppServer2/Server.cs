@@ -12,21 +12,29 @@ namespace EprinAppServer2
     public class Server
     {
         private readonly int _port;
-        private readonly IPAddress _ipAdress;
+        private readonly IPAddress _ipAddress;
         private readonly DataManager _dataManager;
 
         public Server(int port,IPAddress ipAddress, string dataFilePath)
         {
             _port = port;
-            _ipAdress = ipAddress;
+            _ipAddress = ipAddress;
             _dataManager = new DataManager(dataFilePath);
+
+            SaveServerConfig(ipAddress.ToString(), port);
+        }
+
+        private void SaveServerConfig(string ipAddress, int port)
+        {
+            var config = new { IPAddress = ipAddress, Port = port };
+            File.WriteAllText("server_config.json", JsonSerializer.Serialize(config));
         }
 
         public void Start()
         {
-            var listener = new TcpListener(_ipAdress, _port);
+            var listener = new TcpListener(_ipAddress, _port);
             listener.Start();
-            Console.WriteLine($"Server connected to IP:{_ipAdress} and port is: {_port}");
+            Console.WriteLine($"Server connected to IP:{_ipAddress} and port is: {_port}");
             //Connected
 
             while(true)

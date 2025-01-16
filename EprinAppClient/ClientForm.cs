@@ -12,12 +12,10 @@ namespace EprinAppClient
         {
             InitializeComponent();
             _tcpClient = new TcpClient();
-            _tcpClient.Connect("127.0.0.1", 12345); //Connect to server
+            _tcpClient.Connect("127.0.0.1", 12345);
             _stream = _tcpClient.GetStream();
-
             LoadPeople();
         }
-
         private void LoadPeople()
         {
             var response = SendRequest("GET");
@@ -65,7 +63,7 @@ namespace EprinAppClient
 
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
             {
-                MessageBox.Show("Please fill first name and last name textboxes.");
+                MessageBox.Show("Please fill in both textboxes.");
                 return;
             }
 
@@ -114,7 +112,7 @@ namespace EprinAppClient
 
         private void deleteButton_Click(object sender, EventArgs e)
         {
-            if(peopleListBox.SelectedItem is not Person selectedPerson)
+            if (peopleListBox.SelectedItem is not Person selectedPerson)
             {
                 MessageBox.Show("Please select a row to delete");
                 return;
