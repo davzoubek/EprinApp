@@ -7,15 +7,12 @@ namespace EprinAppClient
 {
     public partial class ClientForm : Form
     {
-        private readonly TcpClient _tcpClient;
-        private readonly NetworkStream _stream;
+        private TcpClient _tcpClient;
+        private NetworkStream _stream;
         public ClientForm()
         {
             InitializeComponent();
-            _tcpClient = new TcpClient();
-            _tcpClient.Connect("127.0.0.1", 12345);
-            _stream = _tcpClient.GetStream();
-            LoadPeople();
+            ToggleControls(false);
         }
         private void LoadPeople()
         {
@@ -127,6 +124,57 @@ namespace EprinAppClient
             else
             {
                 MessageBox.Show("Failed to delete person");
+            }
+        }
+
+        private void connectButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string ipAddress = ipTextBox.Text;
+                int port = int.Parse(portTextBox.Text);
+
+                _tcpClient = new TcpClient();
+                _tcpClient.Connect(ipAddress, port);
+                _stream = _tcpClient.GetStream();
+
+                ToggleControls(true);
+                MessageBox.Show($"Connected to server {ipAddress}:{port}.");
+                LoadPeople();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error connecting to server: {ex.Message}");
+            }
+        }
+
+        private void ToggleControls(bool enabled)
+        {
+            deleteButton.Enabled = enabled;
+            addButton.Enabled = enabled;
+            updateButton.Enabled = enabled;
+            firstNameTextBox.Enabled = enabled;
+            lastNameTextBox.Enabled = enabled;
+            connectButton.Enabled = !enabled;
+            discButton.Enabled = enabled;
+        }
+
+        private void discButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if(_tcpClient != null)
+                {
+                    _stream?.Close();
+                    _tcpClient.Close();
+                }
+                ToggleControls(false);
+                peopleListBox.Items.Clear();
+                MessageBox.Show("Disconnected from server!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error disconnecting: {ex.Message}");
             }
         }
     }
