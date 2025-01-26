@@ -37,23 +37,34 @@ namespace EprinAppServer2
             Console.WriteLine($"Server connected to IP:{_ipAddress} and port is: {_port}");
             //Connected
 
-            while(true)
+            var clientTasks = new List<Task>();
+
+            try
             {
-                try
+                while (true)
                 {
                     var client = await listener.AcceptTcpClientAsync();
-                    _ = HandleClientAsync(client);
+                    Console.WriteLine("Client connetcted");
+
+                    var clientTask = HandleClientAsync(client);
+                    clientTasks.Add(clientTask);
+
+                    clientTasks.RemoveAll(t => t.IsCompleted);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error accepting client: {ex.Message}");
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error accepting client: {ex.Message}");
+            }
+            finally
+            {
+                await Task.WhenAll(clientTasks);
+                listener.Stop();
             }
         }
 
         private async Task HandleClientAsync(TcpClient client)
         {
-            Console.WriteLine("Client connetcted");
             using var stream = client.GetStream();
             var buffer = new byte[4096];
 
@@ -68,7 +79,7 @@ namespace EprinAppServer2
                     var response = ProcessRequest(request);
 
                     var responseBytes = Encoding.UTF8.GetBytes(response);
-                    await stream.WriteAsync(responseBytes);
+                    await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
                 }
             }
             catch (Exception ex)
