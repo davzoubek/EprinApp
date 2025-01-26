@@ -12,29 +12,19 @@ namespace EprinAppServer2
     public class Server
     {
         private readonly int _port;
-        private readonly IPAddress _ipAddress;
         private readonly DataManager _dataManager;
 
-        public Server(int port,IPAddress ipAddress, string dataFilePath)
+        public Server(int port, string dataFilePath)
         {
             _port = port;
-            _ipAddress = ipAddress;
             _dataManager = new DataManager(dataFilePath);
-
-            SaveServerConfig(ipAddress.ToString(), port);
-        }
-
-        private void SaveServerConfig(string ipAddress, int port)
-        {
-            var config = new { IPAddress = ipAddress, Port = port };
-            File.WriteAllText("server_config.json", JsonSerializer.Serialize(config));
         }
 
         public async Task StartAsync()
         {
-            var listener = new TcpListener(_ipAddress, _port);
+            var listener = new TcpListener(IPAddress.Any, _port);
             listener.Start();
-            Console.WriteLine($"Server connected to IP:{_ipAddress} and port is: {_port}");
+            Console.WriteLine($"Server port is: {_port}");
             //Connected
 
             var clientTasks = new List<Task>();
@@ -44,7 +34,7 @@ namespace EprinAppServer2
                 while (true)
                 {
                     var client = await listener.AcceptTcpClientAsync();
-                    Console.WriteLine("Client connetcted");
+                    Console.WriteLine("Client connected");
 
                     var clientTask = HandleClientAsync(client);
                     clientTasks.Add(clientTask);
