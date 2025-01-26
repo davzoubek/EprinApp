@@ -30,7 +30,7 @@ namespace EprinAppServer2
             File.WriteAllText("server_config.json", JsonSerializer.Serialize(config));
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
             var listener = new TcpListener(_ipAddress, _port);
             listener.Start();
@@ -39,37 +39,47 @@ namespace EprinAppServer2
 
             while(true)
             {
-                var client = listener.AcceptTcpClient();
-                ThreadPool.QueueUserWorkItem(HandleClient, client);
+                try
+                {
+                    var client = await listener.AcceptTcpClientAsync();
+                    _ = HandleClientAsync(client);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error accepting client: {ex.Message}");
+                }
             }
         }
 
-        private void HandleClient(object clientObject)
+        private async Task HandleClientAsync(TcpClient client)
         {
-            using var client = (TcpClient)clientObject;
+            Console.WriteLine("Client connetcted");
             using var stream = client.GetStream();
             var buffer = new byte[4096];
 
-            while(true)
+            try
             {
-                try
+                while(true)
                 {
-                    var bytesRead = stream.Read(buffer, 0, buffer.Length);
-                    if (bytesRead == 0) break;
+                    var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead == 0) break; //Client disconnected
 
                     var request = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     var response = ProcessRequest(request);
 
                     var responseBytes = Encoding.UTF8.GetBytes(response);
-                    stream.Write(responseBytes, 0, responseBytes.Length);
-                }
-                catch
-                {
-                    break;
+                    await stream.WriteAsync(responseBytes);
                 }
             }
-            Console.WriteLine("Client disonnected");
-            //Disconnected
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error handling client:{ex.Message}");
+            }
+            finally
+            {
+                client.Close();
+                Console.WriteLine("Client disconnected");
+            }
         }
 
         private string ProcessRequest(string request)

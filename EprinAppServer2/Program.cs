@@ -35,4 +35,4 @@ else if(port < 1 || port > 65535)
 const string dataFilePath = "people.json";
 
 var server = new Server(port, ipAddress, dataFilePath);
-server.Start();
+await server.StartAsync();
