@@ -22,18 +22,6 @@ else if(port < 1023 || port > 65535)
 const string dataFilePath = "people.json";
 
 var server = new Server(port, dataFilePath);
-/*var serverTask = server.StartAsync();
-
-Console.WriteLine("Press Enter to stop the server...");
-Console.ReadLine();
-
-server.Stop();
-
-if(!serverTask.IsCompleted)
-{
-    await serverTask();
-}
-*/
 
 Task? serverTask = null;
 
