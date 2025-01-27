@@ -52,6 +52,7 @@
             peopleListBox.Name = "peopleListBox";
             peopleListBox.Size = new Size(256, 289);
             peopleListBox.TabIndex = 0;
+            peopleListBox.SelectedIndexChanged += peopleListBox_SelectedIndexChanged;
             // 
             // firstNameTextBox
             // 

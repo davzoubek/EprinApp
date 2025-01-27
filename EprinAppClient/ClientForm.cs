@@ -120,6 +120,7 @@ namespace EprinAppClient
             if (response == "OK")
             {
                 LoadPeople();
+                CleanTextBox();
             }
             else
             {
@@ -163,7 +164,7 @@ namespace EprinAppClient
         {
             try
             {
-                if(_tcpClient != null)
+                if (_tcpClient != null)
                 {
                     _stream?.Close();
                     _tcpClient.Close();
@@ -176,6 +177,21 @@ namespace EprinAppClient
             {
                 MessageBox.Show($"Error disconnecting: {ex.Message}");
             }
+        }
+
+        private void peopleListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (peopleListBox.SelectedItem is Person selectedPerson)
+            {
+                firstNameTextBox.Text = selectedPerson.FirstName;
+                lastNameTextBox.Text = selectedPerson.LastName;
+            }
+        }
+
+        private void CleanTextBox()
+        {
+            firstNameTextBox.Clear();
+            lastNameTextBox.Clear();
         }
     }
 }
