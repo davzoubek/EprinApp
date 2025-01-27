@@ -1,3 +1,4 @@
+using System.Data;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -69,8 +70,7 @@ namespace EprinAppClient
             if (response != "ERROR")
             {
                 LoadPeople();
-                firstNameTextBox.Clear();
-                lastNameTextBox.Clear();
+                CleanTextBox();
             }
             else
             {
@@ -99,8 +99,7 @@ namespace EprinAppClient
             if (response == "OK")
             {
                 LoadPeople();
-                firstNameTextBox.Clear();
-                lastNameTextBox.Clear();
+                CleanTextBox();
             }
             else
             {
