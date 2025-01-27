@@ -13,6 +13,7 @@ namespace EprinAppServer2
     {
         private readonly int _port;
         private readonly DataManager _dataManager;
+        private CancellationTokenSource _cancellationTokenSource;
 
         public Server(int port, string dataFilePath)
         {
@@ -22,6 +23,9 @@ namespace EprinAppServer2
 
         public async Task StartAsync()
         {
+            _cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = _cancellationTokenSource.Token;
+
             var listener = new TcpListener(IPAddress.Any, _port);
             listener.Start();
             Console.WriteLine($"Server port is: {_port}");
@@ -31,15 +35,16 @@ namespace EprinAppServer2
 
             try
             {
-                while (true)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    var client = await listener.AcceptTcpClientAsync();
-                    Console.WriteLine("Client connected");
-
-                    var clientTask = HandleClientAsync(client);
-                    clientTasks.Add(clientTask);
-
-                    clientTasks.RemoveAll(t => t.IsCompleted);
+                    if (listener.Pending())
+                    {
+                        var client = await listener.AcceptTcpClientAsync();
+                        Console.WriteLine("Client connected");
+                        var clientTask = HandleClientAsync(client, cancellationToken);
+                        clientTasks.Add(clientTask);
+                    }
+                    await Task.Delay(100);
                 }
             }
             catch (Exception ex)
@@ -48,28 +53,37 @@ namespace EprinAppServer2
             }
             finally
             {
-                await Task.WhenAll(clientTasks);
                 listener.Stop();
+                Console.WriteLine("Server stopping...");
+
+                await Task.WhenAll(clientTasks);
+                Console.WriteLine("All client tasks completed");
             }
         }
 
-        private async Task HandleClientAsync(TcpClient client)
+        public void Stop()
         {
-            using var stream = client.GetStream();
-            var buffer = new byte[4096];
+            _cancellationTokenSource?.Cancel();
+        }
+
+        private async Task HandleClientAsync(TcpClient client, CancellationToken cancellationToken)
+        {
 
             try
             {
-                while(true)
+                using var stream = client.GetStream();
+                var buffer = new byte[4096];
+
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                    if (bytesRead == 0) break; //Client disconnected
+                    var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                    if (bytesRead == 0) break; //Client disconnects when there aren't more bytes to read
 
                     var request = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     var response = ProcessRequest(request);
 
                     var responseBytes = Encoding.UTF8.GetBytes(response);
-                    await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                    await stream.WriteAsync(responseBytes, 0, responseBytes.Length, cancellationToken);
                 }
             }
             catch (Exception ex)

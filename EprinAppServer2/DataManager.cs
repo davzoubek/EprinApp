@@ -18,7 +18,7 @@ namespace EprinAppServer2
         {
             _filePath = filePath;
             _people = LoadPeople();
-            _nextId = _people.Count > 0 ? _people[^1].Id + 1 : 1;
+            _nextId = _people.Count > 0 ? _people[^1].Id + 1 : 1; //If _people list is empty start ID from 1 othervise go from last ID on the list +1
         }
 
         public List<Person> GetAllPeople() => new List<Person>(_people);

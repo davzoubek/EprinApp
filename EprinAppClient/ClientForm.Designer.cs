@@ -40,6 +40,8 @@
             portTextBox = new TextBox();
             connectButton = new Button();
             discButton = new Button();
+            label3 = new Label();
+            label4 = new Label();
             SuspendLayout();
             // 
             // peopleListBox
@@ -115,21 +117,21 @@
             // 
             // ipTextBox
             // 
-            ipTextBox.Location = new Point(12, 14);
+            ipTextBox.Location = new Point(12, 30);
             ipTextBox.Name = "ipTextBox";
             ipTextBox.Size = new Size(165, 23);
             ipTextBox.TabIndex = 8;
             // 
             // portTextBox
             // 
-            portTextBox.Location = new Point(183, 14);
+            portTextBox.Location = new Point(183, 30);
             portTextBox.Name = "portTextBox";
             portTextBox.Size = new Size(85, 23);
             portTextBox.TabIndex = 9;
             // 
             // connectButton
             // 
-            connectButton.Location = new Point(325, 14);
+            connectButton.Location = new Point(325, 30);
             connectButton.Name = "connectButton";
             connectButton.Size = new Size(170, 23);
             connectButton.TabIndex = 10;
@@ -139,7 +141,7 @@
             // 
             // discButton
             // 
-            discButton.Location = new Point(514, 14);
+            discButton.Location = new Point(514, 30);
             discButton.Name = "discButton";
             discButton.Size = new Size(189, 23);
             discButton.TabIndex = 11;
@@ -147,11 +149,31 @@
             discButton.UseVisualStyleBackColor = true;
             discButton.Click += discButton_Click;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(12, 12);
+            label3.Name = "label3";
+            label3.Size = new Size(60, 15);
+            label3.TabIndex = 12;
+            label3.Text = "IP address";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(183, 9);
+            label4.Name = "label4";
+            label4.Size = new Size(29, 15);
+            label4.TabIndex = 13;
+            label4.Text = "Port";
+            // 
             // ClientForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(715, 450);
+            Controls.Add(label4);
+            Controls.Add(label3);
             Controls.Add(discButton);
             Controls.Add(connectButton);
             Controls.Add(portTextBox);
@@ -186,5 +208,7 @@
         private TextBox portTextBox;
         private Button connectButton;
         private Button discButton;
+        private Label label3;
+        private Label label4;
     }
 }

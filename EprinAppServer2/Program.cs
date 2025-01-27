@@ -22,4 +22,45 @@ else if(port < 1023 || port > 65535)
 const string dataFilePath = "people.json";
 
 var server = new Server(port, dataFilePath);
-await server.StartAsync();
+/*var serverTask = server.StartAsync();
+
+Console.WriteLine("Press Enter to stop the server...");
+Console.ReadLine();
+
+server.Stop();
+
+if(!serverTask.IsCompleted)
+{
+    await serverTask();
+}
+*/
+
+Task? serverTask = null;
+
+try
+{
+    serverTask = server.StartAsync();
+    Console.WriteLine("Press Enter to stop the server...");
+    Console.ReadLine();
+
+    server.Stop();
+
+    if (serverTask != null)
+    {
+        await serverTask;
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"An error occurred: {ex.Message}");
+}
+finally
+{
+    if (serverTask != null && !serverTask.IsCompleted)
+    {
+        await serverTask;
+    }
+
+    Console.WriteLine("Server has been stopped.");
+}
+
