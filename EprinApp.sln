@@ -5,9 +5,9 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EprinAppClient", "EprinAppClient\EprinAppClient.csproj", "{6F046A53-5CB9-4751-9059-1D0C5AB1F333}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EprinAppServer2", "EprinAppServer2\EprinAppServer2.csproj", "{835A2A5D-B704-4DB3-94D4-5E5D952A149E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EprinAppServer", "EprinAppServer2\EprinAppServer.csproj", "{835A2A5D-B704-4DB3-94D4-5E5D952A149E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EprinAppLibrary", "EprinAppLibrary\EprinAppLibrary.csproj", "{C13CAD2C-FE11-410D-B9A1-77F7CBB311CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EprinAppLibrary", "EprinAppLibrary\EprinAppLibrary.csproj", "{C13CAD2C-FE11-410D-B9A1-77F7CBB311CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
