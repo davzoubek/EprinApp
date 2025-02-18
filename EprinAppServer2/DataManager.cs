@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using EprinAppLibrary;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Http.Headers;
 
 namespace EprinAppServer2
 {

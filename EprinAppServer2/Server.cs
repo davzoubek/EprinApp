@@ -77,7 +77,7 @@ namespace EprinAppServer2
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
-                    if (bytesRead == 0) break; //Client disconnects when there aren't more bytes to read
+                    if (bytesRead == 0) break; //Client disconnects when client ends connection
 
                     var request = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     var response = ProcessRequest(request);
